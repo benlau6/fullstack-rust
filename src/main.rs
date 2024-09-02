@@ -4,7 +4,7 @@ use axum::response::IntoResponse;
 use axum::routing::{get, post};
 use axum::Router;
 use myapp::frontend::home::hello_world;
-use myapp::frontend::home::{login_page, register_page};
+use myapp::frontend::home::{LoginTemplate, RegisterTemplate};
 use myapp::{
     catalog::handler::{CatalogHandlers, HasCatalogHandlers},
     common::{
@@ -95,8 +95,8 @@ async fn main() {
 
     let base_frontend_app = Router::new()
         .route("/", get(hello_world))
-        .route("/login", get(login_page))
-        .route("/register", get(register_page))
+        .route("/login", get(|| async { LoginTemplate }))
+        .route("/register", get(|| async { RegisterTemplate }))
         .layer(cors);
 
     let app = Router::new()
