@@ -1,9 +1,7 @@
 use axum::{
     http::StatusCode,
-    response::{IntoResponse, Response},
-    Json,
+    response::{Html, IntoResponse, Response},
 };
-use serde_json::json;
 use thiserror::Error;
 
 #[derive(Debug, Error)]
@@ -45,9 +43,7 @@ impl IntoResponse for AuthError {
             },
             _ => StatusCode::INTERNAL_SERVER_ERROR,
         };
-        let body = Json(json!({
-            "message": self.to_string(),
-        }));
+        let body = Html(format!("<span>{}</span>", self));
         (status, body).into_response()
     }
 }
