@@ -9,3 +9,19 @@ pub struct HelloTemplate<'a> {
 pub async fn hello_world() -> HelloTemplate<'static> {
     HelloTemplate { name: "world" }
 }
+
+#[derive(Template)]
+#[template(path = "login.html")]
+pub struct LoginTemplate;
+
+pub async fn login_page() -> LoginTemplate {
+    LoginTemplate
+}
+
+#[derive(Template)]
+#[template(path = "register.html")]
+pub struct RegisterTemplate;
+
+pub async fn register_page() -> RegisterTemplate {
+    RegisterTemplate
+}

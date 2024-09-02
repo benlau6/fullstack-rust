@@ -4,6 +4,7 @@ use axum::response::IntoResponse;
 use axum::routing::{get, post};
 use axum::Router;
 use myapp::frontend::home::hello_world;
+use myapp::frontend::home::{login_page, register_page};
 use myapp::{
     catalog::handler::{CatalogHandlers, HasCatalogHandlers},
     common::{
@@ -85,14 +86,18 @@ async fn main() {
         .route("/me", get(me_handler))
         .nest("/users", user_routes)
         .nest(format!("/{}", Service::Pokemon).as_str(), legal_handlers)
-        .layer(cors)
+        .layer(cors.clone())
         .layer(TraceLayer::new_for_http())
         // timeout requests after 10 secs, returning 408 status code
         .layer(TimeoutLayer::new(Duration::from_secs(20)))
         .layer(RequestBodyLimitLayer::new(4096))
         .with_state(state);
 
-    let base_frontend_app = Router::new().route("/", get(hello_world));
+    let base_frontend_app = Router::new()
+        .route("/", get(hello_world))
+        .route("/login", get(login_page))
+        .route("/register", get(register_page))
+        .layer(cors);
 
     let app = Router::new()
         .nest("/", base_frontend_app)
