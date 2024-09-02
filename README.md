@@ -17,3 +17,10 @@
 3. Write the down migration in the generated `.down.sql` file
 4. Run the migration with `sqlx migrate run`
 5. (Optional) Rollback the migration with `sqlx migrate revert`
+
+## How to live reload
+
+It speeds up the development process by automatically recompiling the project when a file changes.
+
+1. Install `cargo-watch` with `cargo install cargo-watch`
+2. Run the project with `cargo watch -x run`
