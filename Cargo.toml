@@ -1,0 +1,67 @@
+[package]
+name = "myapp"
+version = "0.1.0"
+edition = "2021"
+default-run = "myapp"
+
+[dependencies]
+serde = { version = "1.0.209", features = ["derive"] }
+serde_json = "1.0.127"
+tokio = { version = "1.40.0", features = ["full"] }
+axum = { version = "0.7.5", features = [
+  "macros",
+  "form",
+  "multipart",
+  "query",
+] }
+rayon = "1.10.0"
+thiserror = "1.0.63"
+tracing = { version = "0.1.40", features = ["attributes"] }
+tracing-subscriber = { version = "0.3.18", features = ["env-filter"] }
+jsonwebtoken = "9.3.0"
+once_cell = "1.19.0"
+bcrypt = "0.15.1"
+chrono = { version = "0.4.38", features = ["clock", "serde"] }
+tower-http = { version = "0.5.2", features = [
+  "cors",
+  "trace",
+  "timeout",
+  "limit",
+] }
+axum-extra = { version = "0.9.3", features = ["cookie", "typed-header"] }
+sqlx = { version = "0.8.1", features = [
+  "runtime-tokio-rustls",
+  "postgres",
+  "macros",
+  "migrate",
+  "uuid",
+  "chrono",
+  "json",
+] }
+tower = "0.5.0"
+uuid = { version = "1.10.0", features = ["serde", "v4"] }
+async-trait = "0.1.82"
+axum-macros = "0.4.1"
+anyhow = "1.0.86"
+dotenvy = "0.15.7"
+# to generate random number
+rand = "0.8.5"
+itertools = "0.13.0"
+cookie = "0.18.1"
+config = "0.14.0"
+# to opt-in password instead of opt-out
+secrecy = { version = "0.8", features = ["serde"] }
+# environment variables are strings for the config crate and it will fail to pick up integers
+askama_axum = "0.4.0"
+askama = { version = "0.12.1", features = ["with-axum"] }
+serde-aux = "4.5.0"
+tracing-log = "0.2.0"
+num = "0.4.3"
+num-format = "0.4.4"
+regex = "1.10.6"
+rand_pcg = "0.3.1"
+tracing-appender = "0.2.3"
+log = "0.4.22"
+env_logger = "0.11.5"
+time = { version = "0.3.36", features = ["macros"] }
+serde_with = "3.9.0"
