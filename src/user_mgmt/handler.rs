@@ -2,13 +2,14 @@ use super::encryption::hash;
 use super::entity::{CreateUser, User};
 use super::error::AuthError;
 use axum::extract::{Json, State};
+use axum::Form;
 use sqlx::PgConnection;
 use sqlx::PgPool;
 
 pub async fn create_user(
     State(pool): State<PgPool>,
-    Json(user): Json<CreateUser>,
 ) -> Result<(), AuthError> {
+    Form(user): Form<CreateUser>,
     let mut tx = pool.begin().await?;
 
     insert_user(&mut tx, user)

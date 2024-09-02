@@ -5,6 +5,7 @@ use super::error::AuthError;
 use super::handler::query_user;
 use super::jwt::{decode, encode};
 pub use super::jwt::{Claims, Role};
+use axum::Form;
 use axum::{
     async_trait,
     extract::{FromRef, FromRequestParts, State},
@@ -32,7 +33,7 @@ pub async fn login(
     jar: CookieJar,
     State(pool): State<PgPool>,
     // Json must be placed at the end of the parameters
-    Json(payload): Json<AuthPayload>,
+    Form(payload): Form<AuthPayload>,
     // Json must be placed at the end of the Result tuple
 ) -> Result<(CookieJar, Json<AuthBody>), AuthError> {
     // Check if the user sent the credentials
