@@ -1,9 +1,20 @@
 {% extends "base.html" %}
+
 {% block title %}Register{% endblock %}
+
+{% block head %}
+<style>
+  #result {
+    display: block;
+    color: red;
+  }
+</style>
+{% endblock %}
+
 {% block content %}
 <div>
   <h1>Register</h1>
-  <form hx-post="/api/v1/users">
+  <form hx-post="/api/v1/users" hx-ext="response-targets" hx-target-4*="#result" hx-target-500="#result">
     <div>
       <label for="username">Username:</label>
       <input type="text" id="username" name="username">
@@ -12,7 +23,8 @@
       <label for="password">Password:</label>
       <input type="password" id="password" name="password">
     </div>
-    <button>Register</button>
+    <output id="result"></output>
+    <button type="submit">Register</button>
     <button hx-get="/login" hx-target="body" hx-replace-url="true">Login</button>
 </div>
 {% endblock %}

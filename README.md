@@ -24,3 +24,14 @@ It speeds up the development process by automatically recompiling the project wh
 
 1. Install `cargo-watch` with `cargo install cargo-watch`
 2. Run the project with `cargo watch -x run`
+
+## How to handle error response using HTMX
+
+Normally htmx don't swap a div under [certain response status](https://htmx.org/docs/#response-handling).
+
+1. 204 No Content by default does nothing, but is not an error
+2. 2xx, 3xx and 422 responses are non-errors and are swapped
+3. 4xx & 5xx responses are not swapped and are errors
+4. all other responses are swapped using "..." as a catch-all
+
+However, it can be altered by a htmx extension called [response-targets](https://github.com/bigskysoftware/htmx-extensions/blob/main/src/response-targets/README.md) to swap the div.
