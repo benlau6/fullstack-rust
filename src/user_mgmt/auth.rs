@@ -1,22 +1,22 @@
-use crate::configuration::{get_environment, Environment};
-
 use super::encryption::verify;
 use super::error::AuthError;
 use super::handler::query_user;
 use super::jwt::{decode, encode};
 pub use super::jwt::{Claims, Role};
+use crate::configuration::{get_environment, Environment};
 use axum::Form;
 use axum::{
     async_trait,
     extract::{FromRef, FromRequestParts, State},
     http::request::Parts,
-    Json, RequestPartsExt,
+    RequestPartsExt,
 };
 use axum_extra::{
     extract::cookie::{Cookie, CookieJar, SameSite},
     headers::{authorization::Bearer, Authorization},
     TypedHeader,
 };
+use axum_htmx::HxRedirect;
 use cookie::time::Duration;
 use serde::{Deserialize, Serialize};
 use sqlx::PgPool;
@@ -35,7 +35,7 @@ pub async fn login(
     // Json must be placed at the end of the parameters
     Form(payload): Form<AuthPayload>,
     // Json must be placed at the end of the Result tuple
-) -> Result<(CookieJar, Json<AuthBody>), AuthError> {
+) -> Result<(CookieJar, HxRedirect, ()), AuthError> {
     // Check if the user sent the credentials
     if payload.email.is_empty() || payload.password.is_empty() {
         return Err(AuthError::MissingCredentials);
@@ -59,7 +59,7 @@ pub async fn login(
         .path("/")
         .build();
     // Store and Send the authorized token
-    Ok((jar.add(cookie), Json(AuthBody::new(token))))
+    Ok((jar.add(cookie), HxRedirect("/me".parse().unwrap()), ()))
 }
 
 pub async fn logout(jar: CookieJar) -> CookieJar {

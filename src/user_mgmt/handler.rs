@@ -3,13 +3,14 @@ use super::entity::{CreateUser, User};
 use super::error::AuthError;
 use axum::extract::{Json, State};
 use axum::Form;
+use axum_htmx::HxRedirect;
 use sqlx::PgConnection;
 use sqlx::PgPool;
 
 pub async fn create_user(
     State(pool): State<PgPool>,
-) -> Result<(), AuthError> {
     Form(user): Form<CreateUser>,
+) -> Result<(HxRedirect, ()), AuthError> {
     let mut tx = pool.begin().await?;
 
     insert_user(&mut tx, user)
@@ -17,7 +18,7 @@ pub async fn create_user(
         .inspect_err(|e| tracing::error!("Failed to create user: {e}"))?;
     tx.commit().await?;
 
-    Ok(())
+    Ok((HxRedirect("/login".parse().unwrap()), ()))
 }
 
 pub async fn query_users(pool: &PgPool) -> Result<Vec<User>, sqlx::Error> {

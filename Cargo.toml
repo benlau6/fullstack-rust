@@ -65,3 +65,4 @@ log = "0.4.22"
 env_logger = "0.11.5"
 time = { version = "0.3.36", features = ["macros"] }
 serde_with = "3.9.0"
+axum-htmx = "0.6.0"
