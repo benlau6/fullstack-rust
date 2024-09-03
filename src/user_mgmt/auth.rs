@@ -180,6 +180,7 @@ pub struct AuthBody {
 }
 
 impl AuthBody {
+    #[allow(dead_code)]
     fn new(access_token: String) -> Self {
         Self {
             access_token,
@@ -199,6 +200,7 @@ struct UserToClaim {
     id: uuid::Uuid,
     hashed_password: String,
     is_superuser: bool,
+    #[allow(dead_code)]
     is_verified: bool,
 }
 
