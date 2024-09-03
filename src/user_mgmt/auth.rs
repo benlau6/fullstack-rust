@@ -91,9 +91,10 @@ async fn validate_user(
         return Err(AuthError::WrongCredentials);
     }
 
-    if !user.is_verified {
-        return Err(AuthError::UnverifiedUser);
-    }
+    // TODO: implement email verification
+    // if !user.is_verified {
+    //     return Err(AuthError::UnverifiedUser);
+    // }
 
     Ok((user.id, role))
 }
