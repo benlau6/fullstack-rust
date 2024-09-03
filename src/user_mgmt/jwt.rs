@@ -12,6 +12,15 @@ pub enum Role {
     User,
 }
 
+impl Display for Role {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Role::Admin => write!(f, "Admin"),
+            Role::User => write!(f, "User"),
+        }
+    }
+}
+
 /// Our claims struct, it needs to derive `Serialize` and/or `Deserialize`
 #[derive(Debug, Serialize, Deserialize, PartialEq)]
 pub struct Claims {

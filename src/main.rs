@@ -3,8 +3,7 @@ use axum::http::{Method, StatusCode, Uri};
 use axum::response::IntoResponse;
 use axum::routing::{get, post};
 use axum::Router;
-use myapp::frontend::home::hello_world;
-use myapp::frontend::home::{LoginTemplate, RegisterTemplate};
+use myapp::frontend::create_frontend_router;
 use myapp::{
     catalog::handler::{CatalogHandlers, HasCatalogHandlers},
     common::{
@@ -77,7 +76,7 @@ async fn main() {
     // and then call layer afterwards.
     // Additional routes added after layer is called will not have the middleware added.
 
-    let legal_handlers = create_module_router::<Pokemon>();
+    let pokemon_handlers = create_module_router::<Pokemon>();
 
     let base_api_app = Router::new()
         .route("/", get(root))
@@ -85,23 +84,19 @@ async fn main() {
         .route("/auth/logout", post(logout))
         .route("/me", get(me_handler))
         .nest("/users", user_routes)
-        .nest(format!("/{}", Service::Pokemon).as_str(), legal_handlers)
-        .layer(cors.clone())
-        .layer(TraceLayer::new_for_http())
+        .nest(format!("/{}", Service::Pokemon).as_str(), pokemon_handlers)
         // timeout requests after 10 secs, returning 408 status code
         .layer(TimeoutLayer::new(Duration::from_secs(20)))
-        .layer(RequestBodyLimitLayer::new(4096))
-        .with_state(state);
+        .layer(RequestBodyLimitLayer::new(4096));
 
-    let base_frontend_app = Router::new()
-        .route("/", get(hello_world))
-        .route("/login", get(|| async { LoginTemplate }))
-        .route("/register", get(|| async { RegisterTemplate }))
-        .layer(cors);
+    let base_frontend_app = create_frontend_router();
 
     let app = Router::new()
         .nest("/", base_frontend_app)
         .nest("/api/v1", base_api_app)
+        .layer(TraceLayer::new_for_http())
+        .layer(cors)
+        .with_state(state)
         .fallback(fallback);
 
     // For macos, listen to IPV4 and IPV6
