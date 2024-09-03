@@ -16,6 +16,8 @@ pub enum AuthError {
     InvalidToken,
     #[error("Token creation error")]
     TokenCreation,
+    #[error("Email already exists")]
+    EmailExists,
     #[error(transparent)]
     CommonError(#[from] crate::common::error::CommonError),
     #[error(transparent)]
@@ -41,6 +43,7 @@ impl IntoResponse for AuthError {
                 jsonwebtoken::errors::ErrorKind::ExpiredSignature => StatusCode::UNAUTHORIZED,
                 _ => StatusCode::INTERNAL_SERVER_ERROR,
             },
+            AuthError::EmailExists => StatusCode::CONFLICT,
             _ => StatusCode::INTERNAL_SERVER_ERROR,
         };
         let body = Html(format!("<span>{}</span>", self));

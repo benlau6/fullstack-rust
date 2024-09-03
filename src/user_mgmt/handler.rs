@@ -64,7 +64,13 @@ pub async fn insert_user(
     )
     .fetch_one(tx)
     .await
-    .inspect_err(|e| tracing::error!("Failed to insert user: {e}"))?;
+    .inspect_err(|e| tracing::error!("Failed to insert user: {e}"))
+    .map_err(|e| match e {
+        sqlx::Error::Database(ref e) if e.constraint() == Some("users_email_key") => {
+            AuthError::EmailExists
+        }
+        _ => AuthError::DatabaseError(e),
+    })?;
 
     Ok(row.id)
 }
