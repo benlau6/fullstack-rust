@@ -28,7 +28,7 @@ pub async fn me_handler(user: CurrentUser) -> Result<String, AuthError> {
 // TODO: should it be in auth.rs? or handler.rs? messy code separation
 // tracing::instrument is a wrapper
 // it shows only if there are logs inside.
-#[tracing::instrument(name="Logging in", skip(jar, pool, payload), fields(username = %payload.username))]
+#[tracing::instrument(name="Logging in", skip(jar, pool, payload), fields(username = %payload.email))]
 pub async fn login(
     jar: CookieJar,
     State(pool): State<PgPool>,
@@ -37,7 +37,7 @@ pub async fn login(
     // Json must be placed at the end of the Result tuple
 ) -> Result<(CookieJar, Json<AuthBody>), AuthError> {
     // Check if the user sent the credentials
-    if payload.username.is_empty() || payload.password.is_empty() {
+    if payload.email.is_empty() || payload.password.is_empty() {
         return Err(AuthError::MissingCredentials);
     }
     // Here you can check the user credentials from a database
@@ -75,7 +75,7 @@ async fn validate_user(
         "SELECT id, hashed_password, is_superuser, is_verified from users
         WHERE email = $1
         ",
-        credentials.username
+        credentials.email
     )
     .fetch_optional(pool)
     .await?
@@ -190,7 +190,7 @@ impl AuthBody {
 
 #[derive(Debug, Deserialize)]
 pub struct AuthPayload {
-    username: String,
+    email: String,
     password: String,
 }
 
@@ -231,7 +231,7 @@ mod tests {
     async fn test_validate_user_from_db() {
         let pool = get_postgres_pool().await;
         let payload = AuthPayload {
-            username: "admin@example.com".to_string(),
+            email: "admin@example.com".to_string(),
             password: "password".to_string(),
         };
         let result = validate_user(pool, payload).await;

@@ -16,8 +16,12 @@
   <h1>Register</h1>
   <form hx-post="/api/v1/users" hx-ext="response-targets" hx-target-4*="#result" hx-target-500="#result">
     <div>
-      <label for="username">Username:</label>
-      <input type="text" id="username" name="username">
+      <label for="email">Email:</label>
+      <input type="text" id="email" name="email">
+    </div>
+    <div>
+      <label for="name">Name:</label>
+      <input type="text" id="name" name="name">
     </div>
     <div>
       <label for="password">Password:</label>
