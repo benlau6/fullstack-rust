@@ -8,7 +8,7 @@ use thiserror::Error;
 pub enum AuthError {
     #[error("Wrong credentials")]
     WrongCredentials,
-    #[error("Missing credentials")]
+    #[error("Please <a href='/login'>log in</a> first")]
     MissingCredentials,
     #[error("Unverified user")]
     UnverifiedUser,
