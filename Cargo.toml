@@ -27,6 +27,7 @@ tower-http = { version = "0.5.2", features = [
   "trace",
   "timeout",
   "limit",
+  "fs",
 ] }
 axum-extra = { version = "0.9.3", features = ["cookie", "typed-header"] }
 sqlx = { version = "0.8.1", features = [
@@ -66,3 +67,6 @@ env_logger = "0.11.5"
 time = { version = "0.3.36", features = ["macros"] }
 serde_with = "3.9.0"
 axum-htmx = "0.6.0"
+tower-livereload = "0.9.3"
+reqwest = { version = "0.12.7", features = ["json"] }
+http = "1.1.0"

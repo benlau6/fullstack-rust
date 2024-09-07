@@ -21,6 +21,7 @@ use tokio::net::TcpListener;
 use tower_http::cors::CorsLayer;
 use tower_http::limit::RequestBodyLimitLayer;
 use tower_http::{timeout::TimeoutLayer, trace::TraceLayer};
+use tower_livereload::LiveReloadLayer;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
 #[tokio::main]
@@ -94,10 +95,11 @@ async fn main() {
     let app = Router::new()
         .nest("/", base_frontend_app)
         .nest("/api/v1", base_api_app)
+        .with_state(state)
         .layer(TraceLayer::new_for_http())
         .layer(cors)
-        .with_state(state)
-        .fallback(fallback);
+        .fallback(fallback) // it must be placed before the live reload layer
+        .layer(LiveReloadLayer::new());
 
     // For macos, listen to IPV4 and IPV6
     let addr_str = format!(
@@ -105,8 +107,9 @@ async fn main() {
         configuration.application.host, configuration.application.port
     );
     let addr = addr_str.parse::<std::net::SocketAddr>().unwrap();
-    tracing::debug!("Listening on {}", addr);
     let listener = TcpListener::bind(&addr).await.unwrap();
+
+    tracing::debug!("Listening on {}", listener.local_addr().unwrap());
     axum::serve(listener, app)
         .await
         .expect("Cannot start the server");
