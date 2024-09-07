@@ -54,16 +54,28 @@ pub async fn login(
     let cookie = Cookie::build(("access_token", token.clone()))
         .http_only(true)
         .secure(env != Environment::Local)
-        .same_site(SameSite::None)
+        .same_site(SameSite::Lax)
         .max_age(Duration::hours(1))
         .path("/")
         .build();
+
     // Store and Send the authorized token
     Ok((jar.add(cookie), HxRedirect("/me".parse().unwrap()), ()))
 }
 
-pub async fn logout(jar: CookieJar) -> CookieJar {
-    jar.remove(Cookie::from("access_token"))
+/// Remove the cookie by setting the max_age to 0
+/// somehow jar.remove(Cookie::from("access_token")) is not working anymore
+pub async fn logout(jar: CookieJar) -> (CookieJar, HxRedirect, ()) {
+    let env = get_environment();
+    let cookie = Cookie::build(("access_token", ""))
+        .http_only(true)
+        .secure(env != Environment::Local)
+        .same_site(SameSite::Lax)
+        .max_age(Duration::hours(0))
+        .path("/")
+        .build();
+
+    (jar.add(cookie), HxRedirect("/".parse().unwrap()), ())
 }
 
 async fn validate_user(
