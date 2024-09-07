@@ -1,2 +1,2 @@
-mod entity;
+pub mod entity;
 mod service;
