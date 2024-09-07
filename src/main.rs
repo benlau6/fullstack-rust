@@ -20,6 +20,7 @@ use std::time::Duration;
 use tokio::net::TcpListener;
 use tower_http::cors::CorsLayer;
 use tower_http::limit::RequestBodyLimitLayer;
+use tower_http::services::{ServeDir, ServeFile};
 use tower_http::{timeout::TimeoutLayer, trace::TraceLayer};
 use tower_livereload::LiveReloadLayer;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
@@ -93,11 +94,14 @@ async fn main() {
     let base_frontend_app = create_frontend_router();
 
     let app = Router::new()
+        // serve the file in the "assets" directory under `/assets`
         .nest("/", base_frontend_app)
         .nest("/api/v1", base_api_app)
         .with_state(state)
         .layer(TraceLayer::new_for_http())
         .layer(cors)
+        .nest_service("/assets", ServeDir::new("assets"))
+        .nest_service("/favicon.ico", ServeFile::new("assets/favicon.ico"))
         .fallback(fallback) // it must be placed before the live reload layer
         .layer(LiveReloadLayer::new());
 
