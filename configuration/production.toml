@@ -1,0 +1,6 @@
+[application]
+host = "0.0.0.0"
+port = "80"
+
+[database]
+database_name = "myapp_prod"

@@ -1,4 +1,5 @@
-use crate::common::entity::AppState;
+use crate::catalog::pages::{CatalogPages, HasCatalogPages};
+use crate::common::entity::{AppState, Pokemon};
 use crate::user_mgmt::auth::CurrentUser;
 use crate::user_mgmt::error::AuthError;
 use askama_axum::Template;
@@ -40,9 +41,13 @@ async fn me_page(user: CurrentUser) -> Result<MeTemplate, AuthError> {
 }
 
 pub fn create_frontend_router() -> Router<AppState> {
+    let pokemon_router = CatalogPages::<Pokemon>::create_router();
     Router::new()
-        .route("/", get(hello_world))
+        // Cannot think of a good home page, use the pokemon list for now
+        .nest("/", pokemon_router.clone())
+        .route("/hello", get(hello_world))
         .route("/login", get(|| async { LoginTemplate }))
         .route("/register", get(|| async { RegisterTemplate }))
         .route("/me", get(me_page))
+        .nest("/pokemon", pokemon_router)
 }
