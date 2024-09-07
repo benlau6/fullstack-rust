@@ -9,6 +9,10 @@ migrate:
 prepare:
 	@cargo sqlx prepare
 
+insert:
+	@# it inserts the data into the database
+	@cargo run --bin insert_pokemon
+
 app:
 	@# cargo watch is needed to be installed
 	@# it hot reloads the app
