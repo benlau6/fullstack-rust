@@ -53,7 +53,7 @@ async fn main() {
     // Setup app state for the entire app
     let state = AppState { pool };
 
-    let origins = ["http://localhost:5173".parse().unwrap()];
+    let origins = ["http://localhost:3000".parse().unwrap()];
 
     // Setup CORS
     let cors = CorsLayer::new()
