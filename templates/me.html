@@ -1,4 +1,11 @@
+{% extends "base.html" %}
+
+{% block title %}Protected{% endblock %}
+
+{% block content %}
+{% include "components/header.html" %}
 <h1>Hi {{ name }}!</h1>
 <p>This is a protected route. You have successfully logged in.</p>
 <p>Your email is {{ email }}.</p>
 <p>Your role is {{ role }}.</p>
+{% endblock %}
