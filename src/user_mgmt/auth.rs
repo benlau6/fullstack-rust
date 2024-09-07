@@ -59,8 +59,18 @@ pub async fn login(
         .path("/")
         .build();
 
+    let is_logged_in = Cookie::build(("is_logged_in", "1"))
+        .secure(env != Environment::Local)
+        .same_site(SameSite::Lax)
+        .max_age(Duration::hours(1))
+        .path("/")
+        .build();
     // Store and Send the authorized token
-    Ok((jar.add(cookie), HxRedirect("/me".parse().unwrap()), ()))
+    Ok((
+        jar.add(cookie).add(is_logged_in),
+        HxRedirect("/me".parse().unwrap()),
+        (),
+    ))
 }
 
 /// Remove the cookie by setting the max_age to 0
@@ -75,7 +85,18 @@ pub async fn logout(jar: CookieJar) -> (CookieJar, HxRedirect, ()) {
         .path("/")
         .build();
 
-    (jar.add(cookie), HxRedirect("/".parse().unwrap()), ())
+    let is_logged_in = Cookie::build(("is_logged_in", "0"))
+        .secure(env != Environment::Local)
+        .same_site(SameSite::Lax)
+        .max_age(Duration::hours(0))
+        .path("/")
+        .build();
+
+    (
+        jar.add(cookie).add(is_logged_in),
+        HxRedirect("/".parse().unwrap()),
+        (),
+    )
 }
 
 async fn validate_user(
