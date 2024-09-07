@@ -264,7 +264,7 @@ mod tests {
     use crate::common::db::postgres::get_postgres_pool;
 
     #[tokio::test]
-    async fn test_validate_user_from_db() {
+    async fn validate_user_from_db() {
         let pool = get_postgres_pool().await;
         let payload = AuthPayload {
             email: "admin@example.com".to_string(),
@@ -273,11 +273,5 @@ mod tests {
         let result = validate_user(pool, payload).await;
 
         assert!(result.is_ok())
-    }
-
-    #[tokio::test]
-    async fn test_authorize() {
-        // https://github.com/tokio-rs/axum/blob/main/examples/testing/src/main.rs
-        todo!("write the test to test the authorize function")
     }
 }
