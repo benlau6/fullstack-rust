@@ -1,4 +1,4 @@
-# fullstack-crud
+# fullstack-rust
 
 ## How to run the project at the minimal setup
 
@@ -69,3 +69,22 @@ Normally htmx don't swap a div under [certain response status](https://htmx.org/
 4. all other responses are swapped using "..." as a catch-all
 
 However, it can be altered by a htmx extension called [response-targets](https://github.com/bigskysoftware/htmx-extensions/blob/main/src/response-targets/README.md) to swap the div.
+
+## Technical Details of the design
+
+### Trait and associated type
+
+why always defining trait for handlers, services, and pages?
+because fundamentally most of these api functions are stateless,
+we don't actually have a instance storing its own state
+so Self::create_router would still be better than
+a separated `fn create_router(service: impl HasCatalogHandlers) -> Router<AppState>;`
+in that we don't need to pass a instance of service to the every functions,
+a associated type would be sufficient and reduce code duplication.
+
+Moreover, there are many common behaviors that
+should be shared between layers and inside the same layer.
+It provides a convenient way to reuse the shared behaviors through trait methods or default
+implementations in the same trait or in the associated type which requires a trait bound.
+It also ensures that every new struct is enforced to implement the same behaviors before being
+introduced.
