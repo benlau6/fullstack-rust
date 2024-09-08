@@ -22,7 +22,14 @@ Cargo.lock
 
 # Custom
 .sqlx/
-.env
-data/
 .pnpm/
 node_modules/
+
+# hide sensitive information
+.env
+data/
+base.toml
+configuration/local.toml
+configuration/base.toml
+configuration/development.toml
+configuration/production.toml

@@ -1,0 +1,15 @@
+[application]
+# We are using 127.0.0.1 as our host in address,
+# we are instructing our application to only accept connec-ions coming from the same machine
+# replace `myapp` with your application name to show tracing log properly
+# IPV6 localhost [::] is for macos
+# TODO: "[::]" is not working for tower_livereload
+# NOTE: "0.0.0.0" or "127.0.0.1" are both working for tower_livereload
+host = "127.0.0.1"
+port = 8000
+
+[database]
+# for development using docker compose, we need to use the service name as host
+# for api in docker-compose, host need to be service name, e.g. "postgres"
+host = "localhost"
+database_name = "myapp"

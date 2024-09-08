@@ -38,7 +38,7 @@ pub struct SecuritySettings {
 
 pub fn get_environment() -> Environment {
     let environment: Environment = std::env::var("APP_ENVIRONMENT")
-        .expect("APP_ENVIRONMENT not set in .env.")
+        .expect("APP_ENVIRONMENT not set in system environment variables.")
         .try_into()
         .expect("Failed to parse APP_ENVIRONMENT.");
     environment

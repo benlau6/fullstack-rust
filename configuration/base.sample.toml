@@ -1,0 +1,20 @@
+[application]
+# We are using 127.0.0.1 as our host in address,
+# we are instructing our application to only accept connec-ions coming from the same machine
+# replace `myapp` with your application name to show tracing log properly
+host = "0.0.0.0"
+port = 8000
+rust_log = "rust_axum=debug,axum=debug,tower_http=debug,myapp=debug"
+
+[database]
+host = "localhost"
+username = "postgres"
+password = "password"
+database_name = "myapp"
+port = 5432
+require_ssl = false
+
+[security]
+# This is a secret key that is used to sign the JWT token
+# hashed_passwor in init_admin migration script shall be changed accordingly to pass the authentication test
+secret_key = "secret"
