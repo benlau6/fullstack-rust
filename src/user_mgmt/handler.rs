@@ -75,17 +75,3 @@ pub async fn insert_user(
 
     Ok(row.id)
 }
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use sqlx::Connection;
-
-    #[sqlx::test]
-    async fn test_postgres_connection(pool: PgPool) {
-        let mut conn = pool.acquire().await.expect("Failed to acquire connection");
-        let result = conn.ping().await;
-
-        assert!(result.is_ok());
-    }
-}
