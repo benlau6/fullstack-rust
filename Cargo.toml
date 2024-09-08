@@ -5,8 +5,8 @@ edition = "2021"
 default-run = "myapp"
 
 [dependencies]
-serde = { version = "1.0.209", features = ["derive"] }
-serde_json = "1.0.127"
+serde = { version = "1.0.210", features = ["derive"] }
+serde_json = "1.0.128"
 tokio = { version = "1.40.0", features = ["full"] }
 axum = { version = "0.7.5", features = [
   "macros",
@@ -14,13 +14,13 @@ axum = { version = "0.7.5", features = [
   "multipart",
   "query",
 ] }
-rayon = "1.10.0"
+rayon = "1.10.0" # for password hashing
 thiserror = "1.0.63"
 tracing = { version = "0.1.40", features = ["attributes"] }
 tracing-subscriber = { version = "0.3.18", features = ["env-filter"] }
 jsonwebtoken = "9.3.0"
 once_cell = "1.19.0"
-bcrypt = "0.15.1"
+bcrypt = "0.15.1" # for password hashing
 chrono = { version = "0.4.38", features = ["clock", "serde"] }
 tower-http = { version = "0.5.2", features = [
   "cors",
@@ -30,7 +30,7 @@ tower-http = { version = "0.5.2", features = [
   "fs",
 ] }
 axum-extra = { version = "0.9.3", features = ["cookie", "typed-header"] }
-sqlx = { version = "0.8.1", features = [
+sqlx = { version = "0.8.2", features = [
   "runtime-tokio-rustls",
   "postgres",
   "macros",
@@ -43,10 +43,9 @@ tower = "0.5.0"
 uuid = { version = "1.10.0", features = ["serde", "v4"] }
 async-trait = "0.1.82"
 axum-macros = "0.4.1"
-anyhow = "1.0.86"
-dotenvy = "0.15.7"
-# to generate random number
-rand = "0.8.5"
+anyhow = "1.0.87"
+dotenvy = "0.15.7" # for using .env file
+rand = "0.8.5" # to generate random number
 itertools = "0.13.0"
 cookie = "0.18.1"
 config = "0.14.0"
@@ -70,3 +69,5 @@ axum-htmx = "0.6.0"
 tower-livereload = "0.9.3"
 reqwest = { version = "0.12.7", features = ["json"] }
 http = "1.1.0"
+shuttle-runtime = { version = "0.47.0", default-features = false }
+shuttle-axum = "0.47.0"

@@ -2,9 +2,10 @@ db:
 	@# it runs the postgres database container
 	@docker compose up
 
-migrate:
-	@# it runs the migration to create the table in the database
-	@sqlx migrate run
+deploy:
+	@# it deploys the app to shuttle without commiting the changes, but with the uncommited changes in the deployment
+	@# NOTE: it needs a remote database, please change the DATABASE_URL in the .env file, and therefore local database is not needed
+	@cargo shuttle deploy --ad
 
 prepare:
 	@cargo sqlx prepare
@@ -16,7 +17,7 @@ insert:
 app:
 	@# cargo watch is needed to be installed
 	@# it hot reloads the app
-	@cargo watch -x run
+	@cargo watch -x 'shuttle run'
 
 tailwind:
 	@# tailwindcss is needed to be installed

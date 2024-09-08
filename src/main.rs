@@ -25,8 +25,35 @@ use tower_http::{timeout::TimeoutLayer, trace::TraceLayer};
 use tower_livereload::LiveReloadLayer;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
-#[tokio::main]
-async fn main() {
+#[shuttle_runtime::main]
+async fn shuttle_main() -> shuttle_axum::ShuttleAxum {
+    let app = create_main_router().await;
+    Ok(app.into())
+}
+
+/// This is the original main function before the shuttle runtime and deployment was added.
+/// It is kept here for reference.
+/// Remember to use it with #[tokie::main] instead of #[shuttle_runtime::main]
+#[allow(dead_code)]
+async fn local_axum_without_shuttle() {
+    let configuration = get_configuration().expect("Failed to read configuration.");
+    let app = create_main_router().await;
+
+    // For macos, listen to IPV4 and IPV6
+    let addr_str = format!(
+        "{}:{}",
+        configuration.application.host, configuration.application.port
+    );
+    let addr = addr_str.parse::<std::net::SocketAddr>().unwrap();
+    let listener = TcpListener::bind(&addr).await.unwrap();
+
+    tracing::debug!("Listening on {}", listener.local_addr().unwrap());
+    axum::serve(listener, app)
+        .await
+        .expect("Cannot start the server");
+}
+
+async fn create_main_router() -> Router {
     let configuration = get_configuration().expect("Failed to read configuration.");
 
     // initialize tracing
@@ -50,10 +77,21 @@ async fn main() {
         }
     }
 
+    // Run migrations inside the app so it can use the database url from the configuration
+    // instead of the DATABASE_URL environment variable
+    // and it also makes sure that the migrations are run before the app starts
+    sqlx::migrate!("./migrations")
+        .run(&pool)
+        .await
+        .expect("Failed to run migrations");
+
     // Setup app state for the entire app
     let state = AppState { pool };
 
-    let origins = ["http://localhost:3000".parse().unwrap()];
+    // states the origins that are allowed to make requests to the server
+    // not for the app itself but for any frontend that wants to make requests to the server
+    // currently it is meaningless because the frontend is served by the same server
+    let origins = ["http://localhost:5173".parse().unwrap()];
 
     // Setup CORS
     let cors = CorsLayer::new()
@@ -93,7 +131,7 @@ async fn main() {
 
     let base_frontend_app = create_frontend_router();
 
-    let app = Router::new()
+    Router::new()
         // serve the file in the "assets" directory under `/assets`
         .nest("/", base_frontend_app)
         .nest("/api/v1", base_api_app)
@@ -103,20 +141,7 @@ async fn main() {
         .nest_service("/assets", ServeDir::new("assets"))
         .nest_service("/favicon.ico", ServeFile::new("assets/favicon.ico"))
         .fallback(fallback) // it must be placed before the live reload layer
-        .layer(LiveReloadLayer::new());
-
-    // For macos, listen to IPV4 and IPV6
-    let addr_str = format!(
-        "{}:{}",
-        configuration.application.host, configuration.application.port
-    );
-    let addr = addr_str.parse::<std::net::SocketAddr>().unwrap();
-    let listener = TcpListener::bind(&addr).await.unwrap();
-
-    tracing::debug!("Listening on {}", listener.local_addr().unwrap());
-    axum::serve(listener, app)
-        .await
-        .expect("Cannot start the server");
+        .layer(LiveReloadLayer::new())
 }
 
 fn create_module_router<M>() -> Router<AppState>
