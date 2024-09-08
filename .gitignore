@@ -28,7 +28,6 @@ node_modules/
 # hide sensitive information
 .env
 data/
-base.toml
 configuration/local.toml
 configuration/base.toml
 configuration/development.toml
