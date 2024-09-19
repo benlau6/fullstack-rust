@@ -8,7 +8,7 @@ pub async fn get_postgres_pool() -> &'static PgPool {
     POOL.get_or_init(|| async {
         let configuration = get_configuration().expect("Failed to read configuration.");
         PgPoolOptions::new()
-            .acquire_timeout(std::time::Duration::from_secs(2))
+            .acquire_timeout(std::time::Duration::from_secs(20))
             .connect_lazy_with(configuration.database.with_db())
     })
     .await
