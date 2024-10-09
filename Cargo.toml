@@ -69,5 +69,5 @@ axum-htmx = "0.6.0"
 tower-livereload = "0.9.3"
 reqwest = { version = "0.12.7", features = ["json"] }
 http = "1.1.0"
-shuttle-runtime = { version = "0.47.0", default-features = false }
-shuttle-axum = "0.47.0"
+shuttle-runtime = { version = "0.48.0", default-features = false }
+shuttle-axum = "0.48.0"
